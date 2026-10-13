@@ -56,18 +56,18 @@ export class UI {
     this._returnFocus = {};
     document.addEventListener('keydown', (event) => this.trapFocus(event), true);
     if (this.game.input.isTouch) {
-      $('controls-grid').innerHTML = '<div><b>左侧拖动</b><span>移动 · 靠近绿色碎片升级</span></div><div><b>自动瞄准</b><span>自动攻击附近敌人</span></div><div><b>冲刺</b><span>穿越危险，短暂无敌</span></div><div><b>超载 / 湮灭</b><span>充满后点击释放技能</span></div><div><b>构筑</b><span>查看装备和进化配方</span></div><div><b>菜单</b><span>设置或退出 · 联机继续战斗</span></div>';
-      $('pulse-key').textContent = '超载';
-      $('ult-label').querySelector('span').textContent = '湮灭';
-      $('levelup-sub').querySelector('.key-hint').textContent = '点击卡牌选择';
-      $('build-btn').textContent = '构筑';
-      $('build-close').textContent = '返回';
-      $('cards-build-btn').textContent = '构筑与配方';
-      $('combat-menu-btn').textContent = '菜单';
+      $('controls-grid').innerHTML = '<div><b>왼쪽 드래그</b><span>이동 · 초록 파편 근처에서 업그레이드</span></div><div><b>자동 조준</b><span>근처 적 자동 공격</span></div><div><b>대시</b><span>위험 통과, 짧은 무적</span></div><div><b>오버드라이브 / 소멸</b><span>가득 차면 눌러서 스킬 사용</span></div><div><b>빌드</b><span>장비와 진화 레시피 보기</span></div><div><b>메뉴</b><span>설정 또는 나가기 · 멀티는 계속 진행</span></div>';
+      $('pulse-key').textContent = '오버드라이브';
+      $('ult-label').querySelector('span').textContent = '소멸';
+      $('levelup-sub').querySelector('.key-hint').textContent = '카드를 눌러 선택';
+      $('build-btn').textContent = '빌드';
+      $('build-close').textContent = '돌아가기';
+      $('cards-build-btn').textContent = '빌드·레시피';
+      $('combat-menu-btn').textContent = '메뉴';
     }
     for (const id of ['title-planets', 'lobby-planets']) {
       const picker = $(id);
-      picker.innerHTML = `<div class="planet-heading">选择目的地 <span class="planet-authority"></span></div><div class="planet-grid">${PLANETS.map((p) =>
+      picker.innerHTML = `<div class="planet-heading">목적지 선택 <span class="planet-authority"></span></div><div class="planet-grid">${PLANETS.map((p) =>
         `<button type="button" class="planet-card planet-${p.id}" data-planet="${p.id}" style="--planet-color:${p.color}" aria-pressed="false"><span class="planet-orb" aria-hidden="true"></span><span class="planet-code">${p.code}</span><b>${p.name}</b><span class="planet-biome">${p.biome}</span></button>`
       ).join('')}</div><div class="planet-brief" aria-live="polite"></div>`;
       picker.addEventListener('click', (event) => {
@@ -79,18 +79,18 @@ export class UI {
 
   refreshPlanets() {
     const g = this.game, planet = g.planet;
-    if (g.state === 'title') this.el.titleBest.textContent = g.best > 0 ? `最高纪录 ${formatNum(g.best)}` : '暂无纪录 —— 去创造历史吧';
+    if (g.state === 'title') this.el.titleBest.textContent = g.best > 0 ? `최고 기록 ${formatNum(g.best)}` : '아직 기록 없음 - 첫 기록에 도전하세요';
     for (const id of ['title-planets', 'lobby-planets']) {
       const picker = $(id);
       const locked = !!g.mp && !g.mp.isHost;
-      picker.querySelector('.planet-authority').textContent = locked ? '跟随房主' : '本局结束后可重新选择';
+      picker.querySelector('.planet-authority').textContent = locked ? '방장 따라가기' : '이번 판 종료 후 다시 선택 가능';
       for (const button of picker.querySelectorAll('[data-planet]')) {
         button.setAttribute('aria-pressed', String(button.dataset.planet === planet.id));
         button.disabled = locked;
       }
       picker.querySelector('.planet-brief').innerHTML = `<strong style="color:${planet.color}">${planet.perk}</strong><span>${planet.threat}</span><small>${planet.tactics}</small>`;
     }
-    $('planet-label').textContent = `${planet.name} / 战场目标`;
+    $('planet-label').textContent = `${planet.name} / 전장 목표`;
     $('planet-label').style.color = planet.color;
     $('planet-label').title = planet.perk;
   }
@@ -150,7 +150,7 @@ export class UI {
     this.el.mpJoinBtn.addEventListener('click', () => {
       const name = (this.el.mpName.value || '').trim() || this.game.myName;
       if (!this.el.mpRoom.value.trim() || !this.el.mpPass.value.trim()) {
-        this.setMpStatus('请输入房间名和密码');
+        this.setMpStatus('방 이름과 비밀번호를 입력하세요');
         return;
       }
       this.game.mpJoin(name, this.el.mpRoom.value, this.el.mpPass.value);
@@ -162,9 +162,9 @@ export class UI {
       const fallback = () => {
         const range = document.createRange(); range.selectNodeContents(el);
         const selection = getSelection(); selection.removeAllRanges(); selection.addRange(range);
-        this.toast('已选中，请按 Ctrl/Cmd+C 复制', '#4dff88');
+        this.toast('선택됨 · Ctrl/Cmd+C로 복사하세요', '#4dff88');
       };
-      if (navigator.clipboard && el.textContent) navigator.clipboard.writeText(el.textContent).then(() => this.toast('已复制', '#4dff88')).catch(fallback);
+      if (navigator.clipboard && el.textContent) navigator.clipboard.writeText(el.textContent).then(() => this.toast('복사됨', '#4dff88')).catch(fallback);
       else fallback();
     });
     copy(this.el.lobbyRoom); copy(this.el.lobbyPass);
@@ -194,7 +194,7 @@ export class UI {
   lobbyRefresh(roster, isHost) {
     if (!this.el.lobby.classList.contains('hidden')) {
       this.el.lobbyPlayers.innerHTML = roster.map((p) =>
-        `<div class="lobby-player"><span>${escapeText(p.name)}</span><span>${p.host ? '房主' : '就绪'}</span></div>`
+        `<div class="lobby-player"><span>${escapeText(p.name)}</span><span>${p.host ? '방장' : '준비 완료'}</span></div>`
       ).join('');
     }
   }
@@ -205,7 +205,7 @@ export class UI {
   respawnOverlay(show) { this.el.respawn.classList.toggle('hidden', !show); }
   respawnCountdown(t) {
     this.el.respawnCount.textContent = Math.ceil(Math.max(0, t));
-    $('respawn-detail').textContent = this.game.rescueActive ? '队友在 4m 内协助修复 · 恢复速度 ×2' : '队友靠近 4m 内可加速修复；全队倒地任务失败';
+    $('respawn-detail').textContent = this.game.rescueActive ? '팀원이 4m 이내에서 복구 지원 · 회복 속도 ×2' : '팀원이 4m 이내로 오면 복구 가속 · 전원 쓰러지면 미션 실패';
   }
 
   // ---------- 联机结算 ----------
@@ -219,7 +219,7 @@ export class UI {
       <div class="st"><span>团队等级</span><b>${stats.level}</b></div>
       <div class="st"><span>抵达区域</span><b>SECTOR ${stats.sector}</b></div>
       <div class="st"><span>修复反应堆</span><b>${this.game.reactor.captures}</b></div>`;
-    this.el.retryBtn.textContent = '返回大厅 [R]';
+    this.el.retryBtn.textContent = '로비로 [R]';
     this.respawnOverlay(false);
     this.finishSummary(isHost);
   }
@@ -236,7 +236,7 @@ export class UI {
     this.el.lobby.classList.add('hidden');
     this.el.mpPanel.classList.add('hidden');
     this.el.roster.innerHTML = '';
-    this.el.titleBest.textContent = best > 0 ? `最高纪录 ${formatNum(best)}` : '暂无纪录 —— 去创造历史吧';
+    this.el.titleBest.textContent = best > 0 ? `최고 기록 ${formatNum(best)}` : '아직 기록 없음 - 첫 기록에 도전하세요';
     this.resetDialogs();
     $('combat-tools').classList.add('hidden');
     this.syncDialogs(this.el.startBtn);
@@ -256,17 +256,17 @@ export class UI {
   showPause(show) {
     this.menuOpen = show;
     this.el.pause.classList.toggle('hidden', !show);
-    $('pause-title').textContent = this.game.mp ? '小队菜单' : '已暂停';
-    $('pause-note').textContent = this.game.mp ? '联机战斗继续。菜单不会提供无敌保护。' : '关闭菜单后继续任务';
-    this.el.quitBtn.textContent = this.game.mp ? '离开房间' : '返回主菜单';
+    $('pause-title').textContent = this.game.mp ? '스쿼드 메뉴' : '일시정지됨';
+    $('pause-note').textContent = this.game.mp ? '멀티 전투는 계속됩니다. 메뉴는 무적을 제공하지 않습니다.' : '메뉴를 닫으면 미션 계속';
+    this.el.quitBtn.textContent = this.game.mp ? '방 나가기' : '메인 메뉴로';
     this.syncDialogs(show ? this.el.resumeBtn : null);
   }
 
   showLevelUp(cards, views, onPick) {
     this.el.hud.classList.toggle('choosing-upgrade', !!this.game.mp);
     this.el.levelup.classList.toggle('mp-cards', !!this.game.mp);
-    $('levelup-sub').firstChild.textContent = this.game.mp ? '战斗继续 · 选卡后获得短暂无敌 ' : '选择一项强化 ';
-    $('reroll-btn').textContent = `重抽 [R] · ${this.game.rerolls} 次${views.some((v) => v.cls === 'r-evolve') ? ' · 保留进化机会' : ''}`;
+    $('levelup-sub').firstChild.textContent = this.game.mp ? '전투 계속 · 카드 선택 후 잠시 무적 ' : '강화 하나 선택 ';
+    $('reroll-btn').textContent = `리롤 [R] · ${this.game.rerolls}회${views.some((v) => v.cls === 'r-evolve') ? ' · 진화 기회 보유' : ''}`;
     $('reroll-btn').disabled = this.game.rerolls <= 0;
     this.el.levelup.classList.remove('hidden');
     const wrap = this.el.cards;
@@ -322,7 +322,7 @@ export class UI {
     $('quality').value = s.quality || 'high';
     $('auto-aim').disabled = this.game.input.isTouch;
     if (this.game.input.isTouch) $('auto-aim').checked = true;
-    $('settings-note').textContent = this.game.mp && this.game.state === 'playing' ? '联机不会暂停，请先找到安全位置' : '设置自动保存到此设备';
+    $('settings-note').textContent = this.game.mp && this.game.state === 'playing' ? '멀티는 일시정지되지 않습니다. 먼저 안전한 위치를 찾으세요' : '설정은 이 기기에 자동 저장됩니다';
     $('settings-screen').classList.remove('hidden');
     this.syncDialogs($('settings-close'));
   }
@@ -339,7 +339,7 @@ export class UI {
   showGameOver(stats, isBest) {
     this.el.gameover.classList.remove('hidden');
     this.el.goNewBest.classList.toggle('hidden', !isBest);
-    this.el.retryBtn.textContent = '再次出击 [R]';
+    this.el.retryBtn.textContent = '다시 출격 [R]';
     this.el.goStats.innerHTML = `
       <div class="st hero"><span>最终得分</span><b>${formatNum(stats.score)}</b></div>
       <div class="st"><span>存活时间</span><b>${formatTime(stats.time)}</b></div>
@@ -446,20 +446,20 @@ export class UI {
 
   renderBuild() {
     const g = this.game, upgrades = g.upgrades;
-    $('build-note').textContent = (g.mp ? '联机战斗继续 · ' : '查看时已暂停 · ') + '数值包含星球、被动、路线与当前急速增益；伤害为非暴击单次命中。';
+    $('build-note').textContent = (g.mp ? '멀티 전투 계속 · ' : '보는 동안 일시정지 · ') + '수치는 행성, 패시브, 계열, 현재 가속 보너스를 포함합니다. 피해는 비크리티컬 단일 명중 기준.';
     const rows = (kind) => UPGRADES.filter((u) => u.kind === kind).map((u) => {
       const lv = upgrades.level(u.id), evolved = g.weapons.evolved[u.id];
       const actual = kind === 'weapon' ? upgrades.weaponSummary(u.id) : upgrades.passiveValue(u.id);
-      const next = lv < u.max ? `下级：${upgrades.nextBenefit(u)}` : '已达最高等级';
-      return `<article class="build-item${lv ? '' : ' unowned'}"><div class="build-item-heading"><b>${u.icon} ${escapeText(u.name)}</b><span>${evolved ? '已进化' : `LV ${lv} / ${u.max}`}</span></div><p>${escapeText(actual)}</p><p class="build-next">${escapeText(next)}</p>${kind === 'weapon' ? `<p class="build-recipe">${escapeText(upgrades.evolutionRecipe(u.id))}</p>` : ''}</article>`;
+      const next = lv < u.max ? `다음 단계: ${upgrades.nextBenefit(u)}` : '최고 레벨 달성';
+      return `<article class="build-item${lv ? '' : ' unowned'}"><div class="build-item-heading"><b>${u.icon} ${escapeText(u.name)}</b><span>${evolved ? '진화 완료' : `LV ${lv} / ${u.max}`}</span></div><p>${escapeText(actual)}</p><p class="build-next">${escapeText(next)}</p>${kind === 'weapon' ? `<p class="build-recipe">${escapeText(upgrades.evolutionRecipe(u.id))}</p>` : ''}</article>`;
     }).join('');
     const effects = {
-      pyro: ['武器伤害 +12%', '击杀普通敌人产生半径 2.6m、伤害 20 的爆炸', '武器与流派伤害附加 3 秒点燃，Q / E 不点燃；每秒伤害为该次命中伤害的 20%，同一段点燃保留较强伤害'],
-      volt: ['武器频率 +12%', '击杀时 25% 概率落雷，半径 3m、伤害 50', '每 5 秒轰击最密集敌群，半径 4m、伤害 90'],
-      void: ['最大生命 +20、装甲 +1，并立即修复 20', '受伤时释放半径 5.5m、伤害 32 的新星，冷却 3 秒', '每 8 秒处决 9m 内生命 ≤25% 的普通敌人；每个修复 2，最多 12'],
+      pyro: ['무기 피해 +12%', '일반 적 처치 시 반경 2.6m, 피해 20의 폭발 발생', '무기와 계열 피해에 3초 점화 부여(Q / E는 점화 안 됨). 초당 피해는 해당 명중 피해의 20%, 같은 점화는 더 강한 쪽 유지'],
+      volt: ['무기 발사 빈도 +12%', '처치 시 25% 확률 낙뢰, 반경 3m, 피해 50', '5초마다 가장 밀집한 적군 폭격, 반경 4m, 피해 90'],
+      void: ['최대 체력 +20, 장갑 +1, 즉시 20 회복', '피격 시 반경 5.5m, 피해 32의 노바 발산, 쿨다운 3초', '8초마다 9m 이내 체력 ≤25% 일반 적 처형 · 처형당 2 회복, 최대 12'],
     };
-    const routes = Object.entries(ROUTES).map(([id, route]) => `<article class="build-route" style="--route-c:${route.color}"><b>${route.icon} ${route.name} · 已投入 ${g.routes[id]} 级</b>${ROUTE_TIERS.map((threshold, i) => `<p class="${g.routes[id] >= threshold ? 'unlocked' : ''}">${g.routes[id] >= threshold ? '◆' : '◇'} ${threshold} 级 · ${route.tiers[i]}：${effects[id][i]}</p>`).join('')}</article>`).join('');
-    $('build-content').innerHTML = `<h3>武器与进化配方</h3><div class="build-grid">${rows('weapon')}</div><h3>被动模块</h3><div class="build-grid">${rows('passive')}</div><h3>路线觉醒</h3><p class="build-help">每次选择同路线武器或被动增加 1 点投入。已投入的路线更容易再次出现（每点权重 +12%）；进化还可能需要其他路线的模块。Q / E 的技能击杀不会触发额外击杀爆炸、落雷或连锁伤害；单次施放由普通敌人返还的超载能量最多 25。Boss 奖励独立计算，仍提供超载 100、湮灭 40。</p><div class="build-routes">${routes}</div>`;
+    const routes = Object.entries(ROUTES).map(([id, route]) => `<article class="build-route" style="--route-c:${route.color}"><b>${route.icon} ${route.name} · 투자 ${g.routes[id]}레벨</b>${ROUTE_TIERS.map((threshold, i) => `<p class="${g.routes[id] >= threshold ? 'unlocked' : ''}">${g.routes[id] >= threshold ? '◆' : '◇'} ${threshold}레벨 · ${route.tiers[i]}: ${effects[id][i]}</p>`).join('')}</article>`).join('');
+    $('build-content').innerHTML = `<h3>무기와 진화 레시피</h3><div class="build-grid">${rows('weapon')}</div><h3>패시브 모듈</h3><div class="build-grid">${rows('passive')}</div><h3>계열 각성</h3><p class="build-help">같은 계열의 무기나 패시브를 고를 때마다 투자 1 증가. 투자한 계열은 다시 나올 확률이 높아집니다(포인트당 +12%). 진화에는 다른 계열의 모듈이 필요할 수 있습니다. Q / E 스킬 처치는 추가 처치 폭발, 낙뢰, 연쇄 피해를 발동시키지 않습니다. 일반 적 처치로 되돌려 받는 오버드라이브 에너지는 발당 최대 25. 보스 보상은 별도 계산으로 오버드라이브 100, 소멸 40을 제공합니다.</p><div class="build-routes">${routes}</div>`;
   }
 
   finishSummary(isHost) {
@@ -468,17 +468,17 @@ export class UI {
     $('touch-ui').classList.add('hidden');
     $('combat-tools').classList.add('hidden');
     const victory = this.game.runOutcome === 'victory';
-    $('go-title').textContent = victory ? '能源修复完成' : '信号丢失';
+    $('go-title').textContent = victory ? '에너지 복구 완료' : '신호 끊김';
     $('go-title').classList.toggle('victory', victory);
     $('continue-endless-btn').classList.toggle('hidden', !victory || !isHost);
     this.el.retryBtn.disabled = victory && !isHost;
-    if (victory && !isHost) this.el.retryBtn.textContent = '等待房主选择下一步';
-    this.el.menuBtn.textContent = this.game.mp ? '离开房间' : '返回主菜单';
+    if (victory && !isHost) this.el.retryBtn.textContent = '방장의 다음 선택 대기 중';
+    this.el.menuBtn.textContent = this.game.mp ? '방 나가기' : '메인 메뉴로';
     const summary = this.game.runSummary?.();
     if (summary) {
       const build = Array.isArray(summary.build) ? summary.build.map((item) => typeof item === 'string' ? item : `${item.name || item.id} ${item.level ? 'LV' + item.level : ''}`).join(' · ')
         : typeof summary.build === 'object' ? Object.entries(summary.build).map(([id, level]) => `${id} LV${level}`).join(' · ') : String(summary.build || '');
-      $('go-summary').innerHTML = `<p><b>${escapeText(summary.planet || this.game.planet.name)} · ${escapeText(summary.mode || '')}</b></p><p>${escapeText(summary.cause || (victory ? '已完成撤离条件' : '战机被摧毁'))}</p><p>最终构筑：${escapeText(build)}</p>${summary.damage?.length ? `<div class="damage-summary">${summary.damage.map((row) => `<span>${escapeText(row.name)} <b>${formatNum(Math.round(row.value))}</b></span>`).join('')}</div>` : ''}${victory && !isHost ? '<p>等待房主选择继续无尽或带领小队返回大厅；也可离开房间。</p>' : ''}`;
+      $('go-summary').innerHTML = `<p><b>${escapeText(summary.planet || this.game.planet.name)} · ${escapeText(summary.mode || '')}</b></p><p>${escapeText(summary.cause || (victory ? '탈출 조건 완료' : '기체 파괴됨'))}</p><p>최종 빌드: ${escapeText(build)}</p>${summary.damage?.length ? `<div class="damage-summary">${summary.damage.map((row) => `<span>${escapeText(row.name)} <b>${formatNum(Math.round(row.value))}</b></span>`).join('')}</div>` : ''}${victory && !isHost ? '<p>방장이 엔드리스 계속 또는 스쿼드 로비 복귀를 선택할 때까지 대기. 방을 나갈 수도 있습니다.</p>' : ''}`;
     } else $('go-summary').textContent = '';
     this.syncDialogs(victory && isHost ? $('continue-endless-btn') : this.el.retryBtn);
   }
