@@ -134,7 +134,7 @@ export class Player {
     return true;
   }
 
-  takeDamage(raw, game, cause = '敌方攻击') {
+  takeDamage(raw, game, cause = '적의 공격') {
     if (!this.alive || this.dead || this.invulnerable) return false;
     // 护盾抵挡一次
     if (this.shield) {
