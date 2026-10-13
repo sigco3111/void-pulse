@@ -106,13 +106,13 @@ export class Game {
     this.best = bestRecord(recordKey(this.planet.id));
     this.damageBySource = {};
     this.runOutcome = null; this.endless = false;
-    this.lastDamageCause = '信号丢失';
+    this.lastDamageCause = '신호 끊김';
     this.ambientT = 0;
     // 联机
     this.mp = null;
     this.net = null;
     this.arena = ARENA;
-    this.myName = '玩家' + Math.floor(100 + Math.random() * 900);
+    this.myName = '플레이어' + Math.floor(100 + Math.random() * 900);
     // 连锁击杀
     this.chain = 0;
     this.chainT = 0;
@@ -194,9 +194,9 @@ export class Game {
       .map((u) => `${u.name} ${this.upgrades.level(u.id)}${this.weapons.evolved[u.id] ? '★' : ''}`).join(' · ');
     const totals = this.damageBySource[this.net?.id ?? 'solo'] || {};
     return {
-      cause: this.runOutcome === 'victory' ? '能源网络修复完成，战机撤离条件已达成' : this.lastDamageCause,
+      cause: this.runOutcome === 'victory' ? '에너지 네트워크 복구 완료, 기체 탈출 조건 달성' : this.lastDamageCause,
       build, planet: this.planet.name,
-      mode: `${this.mp ? `${this.runPlayerCount}人合作` : '单人'}${this.endless ? '无尽' : '任务'}`,
+      mode: `${this.mp ? `${this.runPlayerCount}인 협동` : '싱글'}${this.endless ? '엔드리스' : '미션'}`,
       damage: Object.entries(totals).map(([kind, value]) => ({ name: DAMAGE_NAMES[kind] || DAMAGE_NAMES.direct, value: Math.round(value) })).sort((a, b) => b.value - a.value),
     };
   }
@@ -237,7 +237,7 @@ export class Game {
     this.clock.getDelta(); this.input.clear();
     this.ui.showHud();
     if (this.mp && this.player.dead) this.ui.respawnOverlay(true);
-    this.ui.toast('无尽挑战开启 · 保留构筑，继续创造纪录', '#ffd23e');
+    this.ui.toast('엔드리스 도전 개시 · 빌드를 유지하고 기록에 도전하세요', '#ffd23e');
   }
 
   // ============ 联机：模式/大厅 ============
@@ -336,24 +336,24 @@ export class Game {
   // 创建房间
   async mpCreate(name) {
     const room = genRoomCode(), pass = genPassword();
-    this.ui.setMpStatus('连接中继服务器…');
+    this.ui.setMpStatus('릴레이 서버 연결 중…');
     try {
       await this._mpConnect(name);
       this.pendingRoom = { room, pass };
       this.net.create(room, pass);
     } catch (e) {
-      this.ui.setMpStatus('连接失败：' + e.message);
+      this.ui.setMpStatus('연결 실패: ' + e.message);
     }
   }
 
   // 加入房间
   async mpJoin(name, room, pass) {
-    this.ui.setMpStatus('连接中继服务器…');
+    this.ui.setMpStatus('릴레이 서버 연결 중…');
     try {
       await this._mpConnect(name);
       this.net.join(room.trim().toUpperCase(), pass.trim());
     } catch (e) {
-      this.ui.setMpStatus('连接失败：' + e.message);
+      this.ui.setMpStatus('연결 실패: ' + e.message);
     }
   }
 
@@ -388,7 +388,7 @@ export class Game {
     const locked = await this.net.lockRoom(true);
     this._mpBeginPending = false;
     if (!locked || !this.mpIsHost() || this.state !== 'lobby') {
-      if (!locked) this.ui.toast('房间锁定失败，请重试', '#ff6b81');
+      if (!locked) this.ui.toast('방 잠금 실패. 다시 시도하세요', '#ff6b81');
       return;
     }
     this.mp.send({ k: 'begin', planet: this.planet.id });
@@ -406,7 +406,7 @@ export class Game {
     this.ui.showHud();
     this.ui.hideLobby();
     this.audio.init(); this.audio.resume();
-    this.ui.toast(`⚔ ${this.planet.name} · ${this.mp.participantCount} 人小队出击！`, this.planet.color);
+    this.ui.toast(`⚔ ${this.planet.name} · ${this.mp.participantCount}인 스쿼드 출격!`, this.planet.color);
   }
 
   // 联机团灭（主机广播或本地判定）
@@ -429,10 +429,10 @@ export class Game {
   // 团灭后回到大厅
   quitToLobby(fromHost = false) {
     if (!this.mp || !this.net?.connected) {
-      this.quitToTitle(); this.ui.toast('连接已断开，请重新创建或加入房间', '#ff6b81'); return;
+      this.quitToTitle(); this.ui.toast('연결이 끊어졌습니다. 방을 다시 만들거나 참가하세요', '#ff6b81'); return;
     }
     if (!this.mp.isHost && this.runOutcome === 'victory' && !fromHost) {
-      this.ui.toast('等待房主选择继续无尽或全队返回大厅', '#ffd23e'); return;
+      this.ui.toast('방장이 엔드리스 계속 또는 로비 복귀를 선택할 때까지 대기 중', '#ffd23e'); return;
     }
     if (this.mpIsHost()) this.mp.send({ k: 'lobby' });
     this.resetRun();
@@ -475,7 +475,7 @@ export class Game {
     this.cardOpen = false;
     this.rerolls = 2;
     this.runOutcome = null; this.endless = false; this.damageBySource = {};
-    this.lastDamageCause = '信号丢失'; this._damageContext = null;
+    this.lastDamageCause = '신호 끊김'; this._damageContext = null;
     this.tutorialXpSpawned = false; this.rescueActive = false;
     this.refreshRecord();
     this.reactor.reset();
@@ -653,7 +653,7 @@ export class Game {
     this.ultBeam.visible = true;
     this.ultBeam.position.set(p.pos.x, 30, p.pos.z);
     this.ui.flash(0.9, 500);
-    this.ui.toast('☢ 湮灭协议 —— 全场清除', '#d9b0ff');
+    this.ui.toast('☢ 소멸 프로토콜 - 전장 전체 제거', '#d9b0ff');
     this.shockwaves.fire(p.pos.x, p.pos.z, 30, 0xd9b0ff, 1.2);
     this.shockwaves.fire(p.pos.x, p.pos.z, 18, 0xffffff, 0.8);
     this.particles.burst(p.pos.x, 1, p.pos.z, 80, 0xd9b0ff, { speed: 24, life: 1, size: 1, grav: 0 });
@@ -676,7 +676,7 @@ export class Game {
     }
     if (r.phase === 'active' && this.reactorNoticeCycle !== r.cycle) {
       this.reactorNoticeCycle = r.cycle;
-      this.ui.toast('反应堆上线 · 进入中央光环充能', '#ffd23e');
+      this.ui.toast('원자로 온라인 · 중앙 오라에 들어가 충전', '#ffd23e');
       this.audio.reactorReady();
     }
   }
@@ -689,7 +689,7 @@ export class Game {
       if (healed) this.texts.fire(this.player.pos.x, 1.8, this.player.pos.z, `+${Math.round(healed)}`, 'heal');
     }
     this.pulse = Math.min(PULSE.max, this.pulse + REACTOR.pulse);
-    this.ui.toast('能源解放！全队修复 +18 · 超载 +25 · 18秒急速', '#4dff88');
+    this.ui.toast('에너지 해방! 전원 복구 +18 · 오버드라이브 +25 · 18초 가속', '#4dff88');
     this.audio.reactorCapture();
     this.shockwaves.fire(0, 0, 13, 0x4dff88, 1);
     this.particles.burst(0, 1.5, 0, 36, 0x4dff88, { speed: 12, life: 0.8, size: 0.8 });
@@ -870,7 +870,7 @@ export class Game {
 
   onRouteTierUp(route, tier) {
     const R = ROUTES[route];
-    this.ui.toast(`${R.icon} ${R.name}流派 · 觉醒【${R.tiers[tier - 1]}】`, R.color);
+    this.ui.toast(`${R.icon} ${R.name} 계열 · 각성【${R.tiers[tier - 1]}】`, R.color);
     this.audio.levelup();
     this.shockwaves.fire(this.player.pos.x, this.player.pos.z, 5, parseInt(R.color.slice(1), 16), 0.7);
     if (route === 'void' && tier === 1) {
@@ -909,7 +909,7 @@ export class Game {
       this.lastMilestoneT = this.time;
       this.shockwaves.fire(p.pos.x, p.pos.z, 6, 0xffd23e, 0.5);
       this.areaDamage(p.pos.x, p.pos.z, 6, 25, { damageKind: 'chain', knock: 12, fromX: p.pos.x, fromZ: p.pos.z });
-      this.texts.fire(p.pos.x, 2, p.pos.z, `${this.chain} 连锁!`, 'crit');
+      this.texts.fire(p.pos.x, 2, p.pos.z, `${this.chain} 연쇄!`, 'crit');
       this.audio.chainZap();
     }
 
@@ -1108,7 +1108,7 @@ export class Game {
         this.sporeDamageT -= dt;
         if (this.sporeDamageT <= 0) {
           this.sporeDamageT = 0.8;
-          const dealt = p.takeDamage(5, this, '孢子毒区');
+          const dealt = p.takeDamage(5, this, '포자 독성 구역');
           if (dealt === 'shield') this.onShieldBreak();
           else if (dealt !== false) this.onPlayerHurt(dealt, p.pos.x, p.pos.z);
         }
@@ -1118,8 +1118,8 @@ export class Game {
     if (!isGuest && !this.tutorialXpSpawned && this.time >= 1) {
       this.tutorialXpSpawned = true;
       this.pickups.dropGems(0, 4.5, XP_CURVE(1), { scatter: false });
-      this.ui.toast('收集前方绿色碎片，完成第一次升级', '#4dff88');
-      if (this.mpIsHost()) this.mp.evToast('收集前方绿色碎片，全队共享升级', '#4dff88');
+      this.ui.toast('앞의 초록 파편을 모아 첫 업그레이드 완료', '#4dff88');
+      if (this.mpIsHost()) this.mp.evToast('앞의 초록 파편을 모으면 팀 전체 업그레이드 공유', '#4dff88');
     }
 
     // 空投补给（主机/单机）
@@ -1129,8 +1129,8 @@ export class Game {
       const supply = this.findSupplyPosition(pp);
       if (supply) {
         this.pickups.spawnSupply(supply.x, supply.z);
-        this.ui.toast('📦 补给舱已投放', '#ffd23e');
-        if (this.mpIsHost()) this.mp.evToast('📦 补给舱已投放', '#ffd23e');
+        this.ui.toast('📦 보급 포드 투하', '#ffd23e');
+        if (this.mpIsHost()) this.mp.evToast('📦 보급 포드 투하', '#ffd23e');
         this.audio.supply();
       }
     }
@@ -1165,7 +1165,7 @@ export class Game {
           p.heal(Math.min(12, eaten * 2));
           this.shockwaves.fire(p.pos.x, p.pos.z, 9, 0xc77bff, 0.7);
           this.particles.burst(p.pos.x, 1, p.pos.z, 26, 0xc77bff, { speed: 10, life: 0.6, size: 0.7 });
-          this.texts.fire(p.pos.x, 2, p.pos.z, `吞噬 x${eaten}`, 'crit');
+          this.texts.fire(p.pos.x, 2, p.pos.z, `포식 x${eaten}`, 'crit');
           this.audio.nova();
           this.addTrauma(0.3);
         }
@@ -1232,7 +1232,7 @@ export class Game {
     const info = this.world.hazardInfo;
     if (info.phase === 'warning' && info.cycle !== this.arenaEventSeen) {
       this.arenaEventSeen = info.cycle;
-      this.ui.toast(`⚠ ${this.planet.hazard.name}即将来袭 —— 离开闪烁区域`, '#ffb13e');
+      this.ui.toast(`⚠ ${this.planet.hazard.name} 접근 중 - 점멸 구역에서 벗어나세요`, '#ffb13e');
       this.audio.bossWarn();
     }
     if (info.phase !== 'active' || !inside || !this.player.alive || this.player.dead) {
@@ -1269,8 +1269,8 @@ export class Game {
   onEvolution(card) {
     const p = this.player;
     this.audio.evolve();
-    this.ui.toast(`⚡ 武器进化：${card.name}`, '#ffd23e');
-    this.mpSendFx('evo', { txt: `${this.myName} 进化了 ${card.name}！` });
+    this.ui.toast(`⚡ 무기 진화: ${card.name}`, '#ffd23e');
+    this.mpSendFx('evo', { txt: `${this.myName} - ${card.name} 진화!` });
     this.ui.flash(0.5, 300);
     this.shockwaves.fire(p.pos.x, p.pos.z, 8, 0xffd23e, 0.8);
     this.particles.burst(p.pos.x, 1, p.pos.z, 40, 0xffd23e, { speed: 10, life: 0.9, size: 0.8, grav: 2 });
@@ -1281,7 +1281,7 @@ export class Game {
   onShieldBreak() {
     const p = this.player;
     this.audio.shieldBreak();
-    this.texts.fire(p.pos.x, 1.6, p.pos.z, '护盾破碎', 'hurt');
+    this.texts.fire(p.pos.x, 1.6, p.pos.z, '실드 파괴', 'hurt');
     this.shockwaves.fire(p.pos.x, p.pos.z, 2.5, 0x9fd8ff, 0.4);
     this.particles.burst(p.pos.x, 1, p.pos.z, 14, 0x9fd8ff, { speed: 7, life: 0.4, size: 0.6 });
   }
@@ -1330,7 +1330,7 @@ export class Game {
         if (!e.active || e.dying || e.dmg <= 0) continue;
         const rr = e.radius + p.radius;
         if (dist2(p.pos.x, p.pos.z, e.pos.x, e.pos.z) < rr * rr) {
-          const dealt = p.takeDamage(e.dmg, this, ENEMY_NAMES[e.type] || '敌人接触');
+          const dealt = p.takeDamage(e.dmg, this, ENEMY_NAMES[e.type] || '적과 접촉');
           if (dealt === 'shield') this.onShieldBreak();
           else if (dealt !== false) this.onPlayerHurt(dealt, e.pos.x, e.pos.z);
         }
@@ -1343,7 +1343,7 @@ export class Game {
         const hit = segmentCircleHitFraction(b.prevX ?? b.pos.x, b.prevZ ?? b.pos.z, b.pos.x, b.pos.z, p.pos.x, p.pos.z, rr);
         if (Number.isFinite(hit) && hit < (b.wallHitFraction ?? Infinity)) {
           b.active = false; b.mesh.visible = false;
-          const dealt = p.takeDamage(b.dmg, this, '敌方弹幕');
+          const dealt = p.takeDamage(b.dmg, this, '적 탄막');
           if (dealt === 'shield') this.onShieldBreak();
           else if (dealt !== false) this.onPlayerHurt(dealt, b.pos.x, b.pos.z);
         }
@@ -1423,7 +1423,7 @@ export class Game {
     if (inp.justPressed('KeyF') && !this.input.isTouch) {
       this.settings.autoAim = !this.settings.autoAim;
       saveSettings(this.settings);
-      this.ui.toast(this.settings.autoAim ? '自动瞄准已开启' : '鼠标瞄准已开启', '#2ee6ff');
+      this.ui.toast(this.settings.autoAim ? '자동 조준 켜짐' : '마우스 조준 켜짐', '#2ee6ff');
     }
     if (inp.justPressed('KeyR') && (this.cardOpen || this.state === 'levelup')) this.rerollCards();
     if (inp.justPressed('KeyM')) {
@@ -1472,4 +1472,4 @@ export class Game {
     this.renderer.setSize(innerWidth, innerHeight);
     this.composer.setSize(innerWidth, innerHeight);
   }
-}
+            }
