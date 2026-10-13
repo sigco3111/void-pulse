@@ -168,22 +168,22 @@ export class MpSession {
       if (this.disposed) return;
       this._addPeer(m.id, m.name);
       this.game.ui.lobbyRefresh(this.roster(), this.isHost);
-      this.game.ui.toast(`${m.name} 加入了房间`, '#4dff88');
+      this.game.ui.toast(`${m.name} 님이 방에 참가했습니다`, '#4dff88');
     });
     n.on('peer_leave', (m) => {
       if (this.disposed) return;
       this._removePeer(m.id);
       this.game.ui.lobbyRefresh(this.roster(), this.isHost);
-      this.game.ui.toast(`${m.name} 离开了房间`, '#ff6b81');
+      this.game.ui.toast(`${m.name} 님이 방을 나갔습니다`, '#ff6b81');
     });
     n.on('host_left', () => {
       if (this.disposed || this.game.mp !== this) return;
-      this.game.ui.toast('房主已离开，房间解散', '#ff6b81');
+      this.game.ui.toast('방장이 나가 방이 해산되었습니다', '#ff6b81');
       this.game.quitToTitle();
     });
     n.on('closed', () => {
       if (!this.disposed && this.game.mp === this) {
-        this.game.ui.toast('与服务器断开连接', '#ff6b81');
+        this.game.ui.toast('서버와 연결이 끊어졌습니다', '#ff6b81');
         this.game.quitToTitle();
       }
     });
@@ -342,7 +342,7 @@ export class MpSession {
         if (!this.isHost && d.id === this.net.id && g.state === 'playing') {
           g.startMpDeath();
           this.sendPos();
-          g.ui.toast('连接恢复，等待队友救援或重生', '#ff9f3e');
+          g.ui.toast('연결 복구됨 · 팀원의 구조 또는 리스폰 대기 중', '#ff9f3e');
         }
         break;
       case 'gov': if (!this.isHost) g.mpGameOver(d); break;
@@ -350,7 +350,7 @@ export class MpSession {
       case 'hostaway':
         if (!this.isHost) {
           this.hostAway = true;
-          g.ui.toast('⏸ 房主切换了标签页，世界暂停中…', '#ff9f3e');
+          g.ui.toast('⏸ 방장이 탭을 전환하여 일시정지 중…', '#ff9f3e');
         }
         break;
       case 'hostback':
@@ -358,7 +358,7 @@ export class MpSession {
           this.hostAway = false;
           this.clockSynced = false;
           this.lastSnapAt = 0;
-          g.ui.toast('▶ 房主回来了，继续战斗！', '#4dff88');
+          g.ui.toast('▶ 방장이 돌아왔습니다. 전투 재개!', '#4dff88');
         }
         break;
     }
@@ -525,7 +525,7 @@ export class MpSession {
     const g = this.game, p = g.player;
     const rr = d.r + p.radius;
     if (dist2(d.x, d.z, p.pos.x, p.pos.z) < rr * rr) {
-      const dealt = p.takeDamage(d.dmg, g, '自爆蜂');
+      const dealt = p.takeDamage(d.dmg, g, '자폭 벌');
       if (dealt === 'shield') g.onShieldBreak();
       else if (dealt !== false) g.onPlayerHurt(dealt, d.x, d.z);
     }
