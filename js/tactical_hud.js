@@ -22,29 +22,29 @@ export class TacticalHud {
     const active = r.phase === 'active';
     const distance = Math.hypot(g.player.pos.x, g.player.pos.z);
     const left = Math.max(0, Math.ceil(MISSION.seconds - g.time));
-    this.mission.textContent = g.endless ? `无尽挑战 · 已修复 ${r.captures} 次` : `撤离条件：修复 ${Math.min(MISSION.captures, r.captures)}/${MISSION.captures} · ${left > 0 ? `坚守 ${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}` : '坚守完成'}`;
-    this.title.textContent = r.buffLeft > 0 ? `能源急速 · ${Math.ceil(r.buffLeft)}s` : active ? '夺取反应堆' : `反应堆 · ${Math.ceil(r.left)}s 后上线`;
-    this.detail.textContent = r.buffLeft > 0 ? '全队射速 +25% · 已夺取 ' + r.captures + ' 次'
-      : active ? `${Math.ceil(r.left)}s 内完成 · ${distance <= REACTOR.radius ? (r.contested ? '敌人干扰 · 清理光环内敌人' : '正在充能 · 圈内最多3人加速') : `距离中心 ${Math.ceil(distance)}m · 进入金色光环`}`
-      : '坚守光环 7 秒 → 修复 / 超载 / 团队急速';
+    this.mission.textContent = g.endless ? `엔드리스 도전 · 복구 ${r.captures}회` : `탈출 조건: 복구 ${Math.min(MISSION.captures, r.captures)}/${MISSION.captures} · ${left > 0 ? `생존 ${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}` : '생존 완료'}`;
+    this.title.textContent = r.buffLeft > 0 ? `에너지 가속 · ${Math.ceil(r.buffLeft)}s` : active ? '원자로 확보' : `원자로 온라인까지 ${Math.ceil(r.left)}s`;
+    this.detail.textContent = r.buffLeft > 0 ? '전원 연사 속도 +25% · 확보 ' + r.captures + ' 회'
+      : active ? `${Math.ceil(r.left)}s 안에 완료 · ${distance <= REACTOR.radius ? (r.contested ? '적 방해 · 오라 안의 적 정리' : '충전 중 · 오라 안 최대 3명 가속') : `중심까지 ${Math.ceil(distance)}m · 황금 오라 진입`}`
+      : '오라에서 7초 버티기 → 복구 / 오버드라이브 / 팀 가속';
     this.fill.style.transform = `scaleX(${r.buffLeft > 0 ? r.buffLeft / REACTOR.buff : active ? r.charge / REACTOR.hold : 0})`;
     this.fill.style.background = r.buffLeft > 0 ? '#4dff88' : '#ffd23e';
     const phase = g.enemies.paceAt(g.time).phase;
     const within = g.time % DIRECTOR.waveSeconds;
     const until = (phase === 'advance' ? DIRECTOR.surgeAt : phase === 'surge' ? DIRECTOR.respiteAt : DIRECTOR.waveSeconds) - within;
     const hazard = g.world.hazardInfo;
-    this.wave.textContent = hazard.phase !== 'calm' ? (hazard.phase === 'warning' ? `⚠ ${hazard.central ? '中央' : ''}${g.planet.hazard.name}预警 · 离开闪烁区域` : `⚡ ${g.planet.hazard.name} · 避开亮色区域`)
-      : `${{ advance: '推进', surge: '虫潮高峰', respite: '喘息 · 回收碎片' }[phase]} · ${Math.ceil(until)}s`;
+    this.wave.textContent = hazard.phase !== 'calm' ? (hazard.phase === 'warning' ? `⚠ ${hazard.central ? '중앙 ' : ''}${g.planet.hazard.name} 경고 · 점멸 구역에서 벗어나세요` : `⚡ ${g.planet.hazard.name} · 밝은 구역을 피하세요`)
+      : `${{ advance: '진행', surge: '스웜 절정', respite: '숨 돌리기 · 파편 회수' }[phase]} · ${Math.ceil(until)}s`;
     const fallen = g.mp && [...g.mp.peers.values()].find((p) => p.ready && p.dead && !p.away);
     const nearFallen = fallen && Math.hypot(g.player.pos.x - fallen.x, g.player.pos.z - fallen.z);
-    this.hint.textContent = g.mp?.hostAway ? '房主暂离 · 全队已暂停'
-      : g.player.dead ? (g.rescueActive ? '队友正在协助修复 · 恢复速度 ×2' : '等待修复 · 队友靠近4m内可加速')
-      : fallen ? `队友倒地 · 距离 ${Math.ceil(nearFallen)}m · 靠近4m内协助修复`
-      : g.player.level < 2 && g.time < 45 ? (g.input.isTouch ? '向上拖动摇杆，收集前方绿色碎片完成升级' : '按 W 向前移动，收集绿色碎片完成第一次升级')
-      : g.time < 24 ? '24秒反应堆上线 · 进入中央金色光环充能，完成修复'
-      : g.time < 35 ? (g.input.isTouch ? '自动开火 · 右侧冲刺避伤 · 点击构筑查看强化与进化配方' : 'SPACE 冲刺避伤 · F 切换瞄准 · B 查看构筑与进化配方')
-      : g.pulse >= 100 ? (g.input.isTouch ? '超载已就绪 · 点击右侧超载按钮解围' : 'Q 超载已就绪 · 被包围时释放') : '';
-    document.getElementById('aim-mode').textContent = g.input.isTouch ? '触屏自动瞄准' : g.settings.autoAim ? '自动瞄准 [F]' : '鼠标瞄准 [F]';
+    this.hint.textContent = g.mp?.hostAway ? '방장 자리 비움 · 팀 전체 일시정지'
+      : g.player.dead ? (g.rescueActive ? '팀원이 복구 지원 중 · 회복 속도 ×2' : '복구 대기 중 · 팀원이 4m 이내 접근 시 가속')
+      : fallen ? `팀원 쓰러짐 · 거리 ${Math.ceil(nearFallen)}m · 4m 이내에서 복구 지원`
+      : g.player.level < 2 && g.time < 45 ? (g.input.isTouch ? '스틱을 위로 드래그해 앞의 초록 파편을 모아 업그레이드 완료' : 'W를 눌러 앞으로 이동해 초록 파편을 모아 첫 업그레이드 완료')
+      : g.time < 24 ? '24초 후 원자로 온라인 · 중앙 황금 오라에 들어가 충전해 복구 완료'
+      : g.time < 35 ? (g.input.isTouch ? '자동 발사 · 오른쪽 대시로 회피 · 빌드에서 강화와 진화 레시피 확인' : 'SPACE 대시 회피 · F 조준 전환 · B 빌드와 진화 레시피 보기')
+      : g.pulse >= 100 ? (g.input.isTouch ? '오버드라이브 준비 완료 · 오른쪽 버튼으로 돌파' : 'Q 오버드라이브 준비 완료 · 포위됐을 때 사용') : '';
+    document.getElementById('aim-mode').textContent = g.input.isTouch ? '터치 자동 조준' : g.settings.autoAim ? '자동 조준 [F]' : '마우스 조준 [F]';
     this.draw();
   }
   draw() {
