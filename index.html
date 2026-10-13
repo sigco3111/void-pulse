@@ -1,24 +1,27 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>VOID PULSE — 穿过虫潮，夺回反应堆</title>
-<meta name="description" content="驾驶无人战机穿过虫潮，搭配武器进化与三条强化流派，夺回反应堆并生存至撤离。VOID PULSE 支持浏览器单人即玩与 2–4 人局域网合作。">
-<link rel="canonical" href="https://gamedev4funs.github.io/void-pulse/">
+<title>VOID PULSE — 스웜을 뚫고 원자로를 탈환하라</title>
+<meta name="description" content="무인 전투기를 몰아 스웜을 뚫고, 무기 진화와 세 계열의 강화로 원자로를 탈환해 탈출까지 생존하세요. VOID PULSE는 브라우저 싱글 플레이와 2-4인 LAN 협동을 지원합니다.">
+<link rel="canonical" href="https://sigco3111.github.io/void-pulse/">
 <meta property="og:type" content="website">
-<meta property="og:locale" content="zh_CN">
+<meta property="og:locale" content="ko_KR">
 <meta property="og:site_name" content="VOID PULSE">
-<meta property="og:title" content="VOID PULSE — 穿过虫潮，夺回反应堆">
-<meta property="og:description" content="四个战场，五种可进化武器。独自迎战虫潮，或与朋友组队守住反应堆。浏览器单人即玩；2–4 人合作需局域网服务。">
-<meta property="og:url" content="https://gamedev4funs.github.io/void-pulse/">
-<meta property="og:image" content="https://gamedev4funs.github.io/void-pulse/assets/screenshots/gameplay.jpg">
-<meta property="og:image:alt" content="VOID PULSE 实机画面：无人战机在能源母港迎战虫群">
+<meta property="og:title" content="VOID PULSE — 스웜을 뚫고 원자로를 탈환하라">
+<meta property="og:description" content="네 개의 전장, 다섯 가지 진화 무기. 혼자 스웜에 맞서거나 친구와 팀을 이뤄 원자로를 지키세요. 브라우저 싱글 플레이. 2-4인 협동은 LAN 서버가 필요합니다.">
+<meta property="og:url" content="https://sigco3111.github.io/void-pulse/">
+<meta property="og:image" content="https://sigco3111.github.io/void-pulse/assets/screenshots/gameplay.jpg">
+<meta property="og:image:alt" content="VOID PULSE 실제 화면: 에너지 모항에서 스웜을 맞서는 무인 전투기">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="VOID PULSE — 穿过虫潮，夺回反应堆">
-<meta name="twitter:description" content="驾驶无人战机，进化武器，迎战虫潮。浏览器单人即玩；2–4 人合作需局域网服务。">
-<meta name="twitter:image" content="https://gamedev4funs.github.io/void-pulse/assets/screenshots/gameplay.jpg">
-<meta name="twitter:image:alt" content="VOID PULSE 实机画面：无人战机在能源母港迎战虫群">
+<meta name="twitter:title" content="VOID PULSE — 스웜을 뚫고 원자로를 탈환하라">
+<meta name="twitter:description" content="무인 전투기를 몰고 무기를 진화시켜 스웜에 맞서세요. 브라우저 싱글 플레이. 2-4인 협동은 LAN 서버가 필요합니다.">
+<meta name="twitter:image" content="https://sigco3111.github.io/void-pulse/assets/screenshots/gameplay.jpg">
+<meta name="twitter:image:alt" content="VOID PULSE 실제 화면: 에너지 모항에서 스웜을 맞서는 무인 전투기">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
 <link rel="stylesheet" href="css/style.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128126;</text></svg>">
 <script type="importmap">
@@ -51,17 +54,17 @@
   <div id="level-badge">LV <span id="level-num">1</span></div>
   <div id="hud-center">
     <div id="sector-label">SECTOR 1</div>
-    <div id="boss-banner" class="hidden">⚠ VOID OVERLORD 逼近 ⚠</div>
+    <div id="boss-banner" class="hidden">⚠ 보이드 오버로드 접근 중 ⚠</div>
     <div id="toast" class="hidden"></div>
   </div>
   <div id="hud-right">
     <div id="score">0</div>
-    <div id="hud-sub"><span id="timer">0:00</span> · <span id="kills">0</span> 击杀</div>
+    <div id="hud-sub"><span id="timer">0:00</span> · <span id="kills">0</span> 처치</div>
     <div id="best-line">BEST <span id="best-score">0</span></div>
-    <div id="chain" class="hidden">🔥 连锁 <span id="chain-num">0</span></div>
+    <div id="chain" class="hidden">🔥 연쇄 <span id="chain-num">0</span></div>
   </div>
   <div id="hud-bottom">
-    <div id="dash-wrap" title="冲刺">
+    <div id="dash-wrap" title="대시">
       <svg viewBox="0 0 40 40"><circle id="dash-ring" cx="20" cy="20" r="16"/></svg>
       <span>⇢</span>
     </div>
@@ -70,64 +73,64 @@
       <div id="pulse-bar" class="bar"><div id="pulse-fill"></div></div>
     </div>
     <div id="ult-wrap">
-      <div id="ult-label">湮灭协议 <span>[E]</span></div>
+      <div id="ult-label">소멸 프로토콜 <span>[E]</span></div>
       <div id="ult-bar" class="bar"><div id="ult-fill"></div></div>
     </div>
   </div>
-  <div id="hud-hints">ESC 暂停 · M 静音 · SPACE 冲刺 · Q 超载 · E 湮灭</div>
-  <div id="objective"><div class="eyebrow" id="planet-label">能源母港 / 战场目标</div><div id="objective-title"></div><div class="bar"><div id="objective-fill"></div></div><div id="objective-detail"></div><div id="wave-status"></div><div id="mission-status" aria-live="polite"></div></div>
-  <div id="radar-wrap"><div class="eyebrow">TACTICAL / N ↑</div><canvas id="radar" width="160" height="160" aria-label="战术小地图"></canvas><div id="aim-mode"></div></div>
+  <div id="hud-hints">ESC 일시정지 · M 음소거 · SPACE 대시 · Q 오버드라이브 · E 소멸</div>
+  <div id="objective"><div class="eyebrow" id="planet-label">에너지 모항 / 전장 목표</div><div id="objective-title"></div><div class="bar"><div id="objective-fill"></div></div><div id="objective-detail"></div><div id="wave-status"></div><div id="mission-status" aria-live="polite"></div></div>
+  <div id="radar-wrap"><div class="eyebrow">TACTICAL / N ↑</div><canvas id="radar" width="160" height="160" aria-label="전술 미니맵"></canvas><div id="aim-mode"></div></div>
   <div id="field-hint"></div>
 </div>
-<div id="combat-tools" class="hidden"><button type="button" id="build-btn" class="utility-btn">构筑 [B]</button><button type="button" id="combat-menu-btn" class="utility-btn">菜单 [ESC]</button></div>
-<button type="button" id="settings-btn" class="utility-btn" aria-label="打开设置">设置 ⚙</button>
+<div id="combat-tools" class="hidden"><button type="button" id="build-btn" class="utility-btn">빌드 [B]</button><button type="button" id="combat-menu-btn" class="utility-btn">메뉴 [ESC]</button></div>
+<button type="button" id="settings-btn" class="utility-btn" aria-label="설정 열기">설정 ⚙</button>
 
 <!-- 触屏控件 -->
 <div id="touch-ui" class="hidden">
   <div id="stick-zone"><div id="stick-base"><div id="stick-nub"></div></div></div>
-  <button type="button" id="btn-dash" class="touch-btn" aria-label="冲刺">冲刺</button>
-  <button type="button" id="btn-pulse" class="touch-btn" aria-label="超载冲击波">超载</button>
-  <button type="button" id="btn-ult" class="touch-btn" aria-label="湮灭协议">湮灭</button>
+  <button type="button" id="btn-dash" class="touch-btn" aria-label="대시">대시</button>
+  <button type="button" id="btn-pulse" class="touch-btn" aria-label="오버드라이브 충격파">오버드라이브</button>
+  <button type="button" id="btn-ult" class="touch-btn" aria-label="소멸 프로토콜">소멸</button>
 </div>
 
 <!-- 标题画面 -->
 <div id="title-screen" class="overlay">
   <div class="title-core">
     <div id="game-logo">VOID<span>PULSE</span></div>
-    <div id="game-sub">霓 虹 深 渊 · 幸 存 者</div>
-    <div class="title-desc">驾驶无人战机穿过虫潮，夺回反应堆。<br>回收碎片，进化武器；独自出击，或与朋友并肩作战。<br>修复反应堆 3 次，并生存 10 分钟即可撤离；也可继续无尽挑战。</div>
-    <section class="planet-picker" id="title-planets" aria-label="选择出击星球"></section>
+    <div id="game-sub">네온 심연 · 서바이버</div>
+    <div class="title-desc">무인 전투기를 몰아 스웜을 뚫고 원자로를 탈환하세요.<br>파편을 회수하고 무기를 진화시키세요. 혼자 또는 친구와 함께.<br>원자로를 3회 복구하고 10분간 생존하면 탈출할 수 있습니다. 이후 엔드리스 도전도 가능합니다.</div>
+    <section class="planet-picker" id="title-planets" aria-label="출격 행성 선택"></section>
     <div class="title-btns">
-      <button type="button" id="start-btn" class="big-btn">单 机 出 击</button>
-      <button type="button" id="mp-btn" class="big-btn big-btn-alt">组 队 联 机</button>
+      <button type="button" id="start-btn" class="big-btn">싱 글 출 격</button>
+      <button type="button" id="mp-btn" class="big-btn big-btn-alt">팀 플 레 이</button>
     </div>
     <!-- 联机面板 -->
     <div id="mp-panel" class="hidden">
       <div class="mp-row">
-        <input id="mp-name" class="mp-input" maxlength="10" placeholder="你的昵称" autocomplete="off">
+        <input id="mp-name" class="mp-input" maxlength="10" placeholder="닉네임" autocomplete="off">
       </div>
       <div class="mp-row mp-split">
         <div class="mp-col">
-          <button type="button" id="mp-create-btn" class="small-btn">创建房间</button>
-          <div class="mp-hint">自动生成房名和密码</div>
+          <button type="button" id="mp-create-btn" class="small-btn">방 만들기</button>
+          <div class="mp-hint">방 이름과 비밀번호 자동 생성</div>
         </div>
         <div class="mp-col">
           <div class="mp-join-inputs">
-            <input id="mp-room" class="mp-input" maxlength="14" placeholder="房名 如 NEBULA-42" autocomplete="off">
-            <input id="mp-pass" class="mp-input" maxlength="6" placeholder="密码 4 位" autocomplete="off">
+            <input id="mp-room" class="mp-input" maxlength="14" placeholder="방 이름 예: NEBULA-42" autocomplete="off">
+            <input id="mp-pass" class="mp-input" maxlength="6" placeholder="비밀번호 4자리" autocomplete="off">
           </div>
-          <button type="button" id="mp-join-btn" class="small-btn">加入房间</button>
+          <button type="button" id="mp-join-btn" class="small-btn">방 참가</button>
         </div>
       </div>
       <div id="mp-status"></div>
     </div>
     <div class="controls-grid" id="controls-grid">
-      <div><b>WASD / 方向键</b><span>移动</span></div>
-      <div><b>F / 鼠标</b><span>切换自动 / 手动瞄准</span></div>
-      <div><b>SPACE / SHIFT</b><span>冲刺（无敌帧）</span></div>
-      <div><b>Q / 右键</b><span>超载冲击波</span></div>
-      <div><b>E</b><span>湮灭协议（碎片充能）</span></div>
-      <div><b>B · ESC / P · M</b><span>构筑 · 菜单 / 单机暂停 · 静音</span></div>
+      <div><b>WASD / 방향키</b><span>이동</span></div>
+      <div><b>F / 마우스</b><span>자동 / 수동 조준 전환</span></div>
+      <div><b>SPACE / SHIFT</b><span>대시 (무적 프레임)</span></div>
+      <div><b>Q / 우클릭</b><span>오버드라이브 충격파</span></div>
+      <div><b>E</b><span>소멸 프로토콜 (파편 충전)</span></div>
+      <div><b>B · ESC / P · M</b><span>빌드 · 메뉴 / 싱글 일시정지 · 음소거</span></div>
     </div>
     <div id="title-best"></div>
   </div>
@@ -136,73 +139,73 @@
 <!-- 联机大厅 -->
 <div id="lobby-screen" class="overlay hidden">
   <div class="panel lobby-panel">
-    <div class="panel-title">集结大厅</div>
+    <div class="panel-title">집결 로비</div>
     <div id="lobby-room-info">
-      <div class="lr-label">房间名（点击复制）</div>
-      <button type="button" id="lobby-room" class="lr-code" aria-label="复制房间名">------</button>
-      <div class="lr-label">密码</div>
-      <button type="button" id="lobby-pass" class="lr-code lr-pass" aria-label="复制房间密码">----</button>
-      <div class="mp-hint">同一局域网的朋友打开本页面 → 组队联机 → 输入房名密码即可加入</div>
+      <div class="lr-label">방 이름 (클릭해 복사)</div>
+      <button type="button" id="lobby-room" class="lr-code" aria-label="방 이름 복사">------</button>
+      <div class="lr-label">비밀번호</div>
+      <button type="button" id="lobby-pass" class="lr-code lr-pass" aria-label="비밀번호 복사">----</button>
+      <div class="mp-hint">같은 LAN의 친구가 이 페이지를 열고 → 팀 플레이 → 방 이름과 비밀번호를 입력하면 참가됩니다</div>
     </div>
     <div id="lobby-players"></div>
-    <section class="planet-picker" id="lobby-planets" aria-label="房主选择出击星球"></section>
-    <button type="button" id="lobby-start-btn" class="big-btn hidden">开 战 [Enter]</button>
-    <div id="lobby-wait" class="mp-hint hidden">等待房主开战…</div>
-    <button type="button" id="lobby-quit-btn" class="small-btn">离开房间</button>
+    <section class="planet-picker" id="lobby-planets" aria-label="방장이 출격 행성 선택"></section>
+    <button type="button" id="lobby-start-btn" class="big-btn hidden">개 시 [Enter]</button>
+    <div id="lobby-wait" class="mp-hint hidden">방장의 개시 대기 중…</div>
+    <button type="button" id="lobby-quit-btn" class="small-btn">방 나가기</button>
   </div>
 </div>
 
 <!-- 倒地重生 -->
 <div id="respawn-overlay" class="hidden">
   <div id="respawn-box">
-    <div id="respawn-title">战机信号中断</div>
+    <div id="respawn-title">기체 신호 두절</div>
     <div id="respawn-count">10</div>
-    <div id="respawn-detail" class="mp-hint">队友维持中继信号，母港正在重建你的无人战机</div>
+    <div id="respawn-detail" class="mp-hint">팀원이 중계 신호를 유지하는 동안 모항이 당신의 무인 전투기를 재건합니다</div>
   </div>
 </div>
 
 <!-- 升级选卡 -->
 <div id="levelup-screen" class="overlay hidden" role="dialog" aria-labelledby="levelup-title">
-  <div id="levelup-title">⬡ 系统升级 ⬡</div>
-  <div id="levelup-sub">选择一项强化 &nbsp;<span class="key-hint">按 1 / 2 / 3，或 Tab 选择、Enter 确认</span></div>
+  <div id="levelup-title">⬡ 시스템 업그레이드 ⬡</div>
+  <div id="levelup-sub">강화 하나 선택 &nbsp;<span class="key-hint">1 / 2 / 3 키 또는 Tab으로 선택, Enter로 확인</span></div>
   <div id="cards"></div>
-  <div class="levelup-actions"><button type="button" id="reroll-btn" class="small-btn">重抽 [R] · 2 次</button><button type="button" id="cards-build-btn" class="small-btn">构筑与配方 [B]</button></div>
+  <div class="levelup-actions"><button type="button" id="reroll-btn" class="small-btn">리롤 [R] · 2회</button><button type="button" id="cards-build-btn" class="small-btn">빌드·레시피 [B]</button></div>
 </div>
 
 <div id="settings-screen" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="settings-title">
   <div class="panel settings-panel">
-    <div class="eyebrow">PILOT CONFIGURATION</div><h2 id="settings-title">驾驶舱设置</h2>
-    <p id="settings-note">设置自动保存到此设备</p>
-    <label>背景音乐 <input id="music-volume" type="range" min="0" max="100" aria-label="背景音乐音量"></label>
-    <label>战斗音效 <input id="sfx-volume" type="range" min="0" max="100" aria-label="战斗音效音量"></label>
-    <label>自动瞄准 <input id="auto-aim" type="checkbox"></label>
-    <label>画质 <select id="quality"><option value="high">高 · 辉光特效</option><option value="low">低 · 降低渲染开销</option></select></label>
-    <label>减少震屏与闪光 <input id="reduced-motion" type="checkbox"></label>
-    <button id="settings-close" class="big-btn">返回游戏 / 菜单</button>
+    <div class="eyebrow">PILOT CONFIGURATION</div><h2 id="settings-title">조종석 설정</h2>
+    <p id="settings-note">설정은 이 기기에 자동 저장됩니다</p>
+    <label>배경 음악 <input id="music-volume" type="range" min="0" max="100" aria-label="배경 음악 볼륨"></label>
+    <label>전투 효과음 <input id="sfx-volume" type="range" min="0" max="100" aria-label="전투 효과음 볼륨"></label>
+    <label>자동 조준 <input id="auto-aim" type="checkbox"></label>
+    <label>그래픽 <select id="quality"><option value="high">높음 · 글로우 효과</option><option value="low">낮음 · 렌더링 부하 절감</option></select></label>
+    <label>화면 흔들림·섬광 줄이기 <input id="reduced-motion" type="checkbox"></label>
+    <button id="settings-close" class="big-btn">게임 / 메뉴로 돌아가기</button>
   </div>
 </div>
 
 <div id="build-screen" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="build-title">
-  <div class="panel build-panel"><div class="eyebrow">LOADOUT / EVOLUTION</div><div class="build-heading"><h2 id="build-title">本局构筑</h2><button type="button" id="build-close" class="small-btn">返回 [B / ESC]</button></div><p id="build-note"></p><div id="build-content"></div></div>
+  <div class="panel build-panel"><div class="eyebrow">LOADOUT / EVOLUTION</div><div class="build-heading"><h2 id="build-title">이번 판 빌드</h2><button type="button" id="build-close" class="small-btn">돌아가기 [B / ESC]</button></div><p id="build-note"></p><div id="build-content"></div></div>
 </div>
 
 <!-- 暂停 -->
 <div id="pause-screen" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="pause-title">
   <div class="panel">
-    <div id="pause-title" class="panel-title">已暂停</div><p id="pause-note" class="dialog-note"></p>
-    <button type="button" id="resume-btn" class="big-btn">继 续</button>
-    <div class="menu-actions"><button type="button" id="menu-build-btn" class="small-btn">查看构筑</button><button type="button" id="menu-settings-btn" class="small-btn">设置</button><button type="button" id="quit-btn" class="small-btn">返回主菜单</button></div>
+    <div id="pause-title" class="panel-title">일시정지됨</div><p id="pause-note" class="dialog-note"></p>
+    <button type="button" id="resume-btn" class="big-btn">계 속</button>
+    <div class="menu-actions"><button type="button" id="menu-build-btn" class="small-btn">빌드 보기</button><button type="button" id="menu-settings-btn" class="small-btn">설정</button><button type="button" id="quit-btn" class="small-btn">메인 메뉴로</button></div>
   </div>
 </div>
 
 <!-- 结算 -->
 <div id="gameover-screen" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="go-title">
   <div class="panel">
-    <div id="go-title">信号丢失</div>
-    <div id="go-new-best" class="hidden">★ 新纪录 ★</div>
-    <div id="go-stats"></div><div id="go-summary"></div><button type="button" id="continue-endless-btn" class="big-btn hidden">继续无尽挑战</button>
-    <button type="button" id="retry-btn" class="big-btn">再次出击 [R]</button>
-    <button type="button" id="menu-btn" class="small-btn">返回主菜单</button>
+    <div id="go-title">신호 끊김</div>
+    <div id="go-new-best" class="hidden">★ 신기록 ★</div>
+    <div id="go-stats"></div><div id="go-summary"></div><button type="button" id="continue-endless-btn" class="big-btn hidden">엔드리스 도전 계속</button>
+    <button type="button" id="retry-btn" class="big-btn">다시 출격 [R]</button>
+    <button type="button" id="menu-btn" class="small-btn">메인 메뉴로</button>
   </div>
 </div>
 
