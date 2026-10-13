@@ -199,8 +199,8 @@ export class Enemies {
         : this.pickType(g.time);
       if (!this.queueSpawn(type, x, z, false, 1.15)) break;
     }
-    g.ui.toast('⚠ 虫群包围 —— 突围！', '#ff5f7a');
-    if (g.mpIsHost()) g.mp.evToast('⚠ 虫群包围 —— 突围！', '#ff5f7a');
+    g.ui.toast('⚠ 스웜 포위 - 돌파하세요!', '#ff5f7a');
+    if (g.mpIsHost()) g.mp.evToast('⚠ 스웜 포위 - 돌파하세요!', '#ff5f7a');
     g.audio.bossWarn();
     g.addTrauma(0.3);
   }
@@ -219,7 +219,7 @@ export class Enemies {
     if (!this.bossWarned && t >= this.bossAt - 3 && !this.bossActive) {
       this.bossWarned = true;
       g.ui.showBossBanner(true);
-      if (g.mpIsHost()) g.mp.evToast('⚠ VOID OVERLORD 逼近 ⚠', '#ff2266');
+      if (g.mpIsHost()) g.mp.evToast('⚠ 보이드 오버로드 접근 중 ⚠', '#ff2266');
       g.audio.bossWarn();
     }
     if (t >= this.bossAt && !this.bossActive) {
@@ -769,7 +769,7 @@ export class Enemies {
     if (hurtsPlayer) {
       const rr = base.blastR + g.player.radius;
       if (dist2(e.pos.x, e.pos.z, g.player.pos.x, g.player.pos.z) < rr * rr) {
-        const dealt = g.player.takeDamage(base.blastDmg, g, '自爆蜂');
+        const dealt = g.player.takeDamage(base.blastDmg, g, '자폭 벌');
         if (dealt === 'shield') g.onShieldBreak();
         else if (dealt !== false) g.onPlayerHurt(dealt, e.pos.x, e.pos.z);
       }
