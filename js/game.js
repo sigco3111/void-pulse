@@ -1472,4 +1472,4 @@ export class Game {
     this.renderer.setSize(innerWidth, innerHeight);
     this.composer.setSize(innerWidth, innerHeight);
   }
-            }
+}
