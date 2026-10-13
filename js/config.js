@@ -97,9 +97,9 @@ export const SUPPLY = {
 
 // —— 流派羁绊：投入同一路线的升级越多，觉醒越强 ——
 export const ROUTES = {
-  pyro: { name: '燃烧', icon: '🔥', color: '#ff7a3e', tiers: ['余烬', '爆燃', '焚天'] },
-  volt: { name: '雷霆', icon: '⚡', color: '#ffd23e', tiers: ['迅捷', '落雷', '雷神'] },
-  void: { name: '虚空', icon: '🌑', color: '#c77bff', tiers: ['韧性', '反噬', '吞噬'] },
+  pyro: { name: '화염', icon: '🔥', color: '#ff7a3e', tiers: ['잔불', '폭염', '염천'] },
+  volt: { name: '뇌전', icon: '⚡', color: '#ffd23e', tiers: ['신속', '낙뢰', '뇌신'] },
+  void: { name: '공허', icon: '🌑', color: '#c77bff', tiers: ['강인', '역습', '포식'] },
 };
 export const ROUTE_TIERS = [4, 8, 13];   // 路线投入等级阈值 → 觉醒 I/II/III
 
