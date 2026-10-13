@@ -36,9 +36,9 @@ export class Net {
       try {
         this.ws = new WebSocket(url);
       } catch (e) { reject(e); return; }
-      const timer = setTimeout(() => { if (!settled) { settled = true; reject(new Error('连接中继服务器超时')); } }, 6000);
+      const timer = setTimeout(() => { if (!settled) { settled = true; reject(new Error('릴레이 서버 연결 시간 초과')); } }, 6000);
       this.ws.onopen = () => { settled = true; clearTimeout(timer); this.connected = true; resolve(); };
-      this.ws.onerror = () => { if (!settled) { settled = true; clearTimeout(timer); reject(new Error('无法连接中继服务器')); } };
+      this.ws.onerror = () => { if (!settled) { settled = true; clearTimeout(timer); reject(new Error('릴레이 서버에 연결할 수 없습니다')); } };
       this.ws.onclose = () => {
         this.connected = false;
         this.emit('closed');
