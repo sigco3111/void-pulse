@@ -562,7 +562,7 @@ export class Weapons {
       g.shockwaves.fire(p.pos.x, p.pos.z, cfg.radius * 0.7, PALETTE.nova, 0.55);
       g.particles.burst(p.pos.x, 0.6, p.pos.z, 50, PALETTE.nova, { speed: 18, life: 0.7, size: 0.9 });
       p.grantShield();
-      g.texts.fire(p.pos.x, 1.8, p.pos.z, '护盾 +1', 'heal');
+      g.texts.fire(p.pos.x, 1.8, p.pos.z, '실드 +1', 'heal');
       g.addTrauma(0.45);
       g.slowmo(0.12, 0.25);
     } else {
